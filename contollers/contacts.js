@@ -10,6 +10,7 @@ const getAll = async (req, res) => {
       res.status(404).json({ message: "Нет контактов" });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Что-то пошло не так" });
   }
 };

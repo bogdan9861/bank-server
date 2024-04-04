@@ -34,11 +34,9 @@ const register = async (req, res) => {
             },
           });
         } else {
-          return res
-            .status(404)
-            .json({
-              message: "Возможно, реферальный пользователь не добавил карту",
-            });
+          return res.status(404).json({
+            message: "Возможно, реферальный пользователь не добавил карту",
+          });
         }
       } else {
         return res
@@ -105,18 +103,25 @@ const login = async (req, res) => {
 
     const user = await prisma.user.findFirst({
       where: {
-        phoneNumber: req.user.phoneNumber,
+        phoneNumber,
       },
     });
 
     const isPasswordCorrect =
       user && (await bcrypt.compare(password, user.password));
 
+    const secret = "Mz5y)_ulhzUqAT4spHC1fRn`|.Slo7";
+
     if (user && isPasswordCorrect) {
-      return res.status(200).json({
+      res.status(200).json({
         name: user.name,
         phoneNumber: user.phoneNumber,
+        token: jwt.sign({ id: user.id }, secret, { expiresIn: "30d" }),
       });
+    } else {
+      res
+        .status(404)
+        .json({ message: "Номер телефона или пароль не совпадают" });
     }
   } catch (error) {
     console.log(error);
@@ -124,7 +129,16 @@ const login = async (req, res) => {
   }
 };
 
+const get = async (req, res) => {
+  try {
+    return res.status(200).json(req.user);
+  } catch (error) {
+    res.status(500).json({message: 'Что-то пошло не так'})
+  }
+};
+
 module.exports = {
   register,
   login,
+  get,
 };

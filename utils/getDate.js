@@ -1,0 +1,49 @@
+const getDate = () => {
+  const date = new Date();
+
+  const getCurrentDate = () => {
+    const days = {
+      0: "Sun.",
+      1: "Mnd.",
+      2: "Tue.",
+      3: "Wed.",
+      4: "Thu.",
+      5: "Fri.",
+      6: "Sat.",
+    };
+
+    const months = {
+      0: "January",
+      1: "Fabruary",
+      2: "March",
+      3: "April",
+      4: "May",
+      5: "June",
+      6: "July",
+      7: "August",
+      8: "September",
+      9: "October",
+      10: "November",
+      11: "December",
+    };
+
+    const WeekDay = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${WeekDay} ${day} ${month} ${year}`;
+  };
+
+  const getTime = () => {
+    return `${date.getHours()}:${date.getMinutes()}`;
+  };
+
+  return { getCurrentDate, getTime };
+};
+
+console.log(getDate().getTime());
+
+module.exports = {
+  getDate,
+};

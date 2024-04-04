@@ -18,6 +18,7 @@ model User {
   referal     String
   addCard     Card[]
   contacts    Contacts[]
+  history     History[]
 }
 
 model Card {
@@ -36,4 +37,17 @@ model Contacts {
   phoneNumber String
   user        User   @relation(fields: [userId], references: [id])
   userId      String
+}
+
+model History {
+  id        String @id @default(uuid())
+  sender    String
+  recipient String
+  reason    String
+  date      String
+  time      String
+  sum       String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }

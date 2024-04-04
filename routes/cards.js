@@ -1,8 +1,10 @@
 let express = require("express");
 let router = express.Router();
 
-let { add, remove, transaction, topUp } = require("../contollers/cards");
+let { get, add, remove, transaction, topUp } = require("../contollers/cards");
 const { auth } = require("../middleware/auth");
+
+router.get('/', auth, get)
 
 router.post("/add", auth, add);
 

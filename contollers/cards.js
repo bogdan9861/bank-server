@@ -1,4 +1,23 @@
 const { prisma } = require("../prisma/prisma-client");
+const { getDate } = require("../utils/getDate");
+
+const get = async (req, res) => {
+  try {
+    const card = await prisma.card.findFirst({
+      where: {
+        userId: req.user.id,
+      },
+    });
+
+    console.log(card);
+
+    if (card) {
+      res.status(200).json(card);
+    } else {
+      res.status(404).json({ message: "Не найдено" });
+    }
+  } catch (error) {}
+};
 
 const add = async (req, res) => {
   try {
@@ -15,7 +34,9 @@ const add = async (req, res) => {
     });
 
     if (cards.length > 0)
-      return res.status(400).json({ message: "Карта уже добавлена" });
+      return res
+        .status(400)
+        .json({ message: "Карта уже добавлена для этого пользователя" });
 
     const card = await prisma.card.create({
       data: {
@@ -65,7 +86,7 @@ const remove = async (req, res) => {
 
 const transaction = async (req, res) => {
   try {
-    const { phoneNumber, sum } = req.body;
+    const { phoneNumber, sum, reason } = req.body;
 
     if (!phoneNumber || !sum) {
       return res.status(400).json({ message: "Все поля обязательны" });
@@ -114,6 +135,30 @@ const transaction = async (req, res) => {
           },
         });
 
+        await prisma.history.create({
+          data: {
+            userId: userTo.id,
+            sender: req.user.name,
+            recipient: "Вы",
+            sum,
+            time: getDate().getTime(),
+            date: getDate().getCurrentDate(),
+            reason: reason || "without reason",
+          },
+        });
+
+        await prisma.history.create({
+          data: {
+            userId: req.user.id,
+            sender: "Вы",
+            recipient: userTo.name,
+            sum,
+            time: getDate().getTime(),
+            date: getDate().getCurrentDate(),
+            reason: reason || "without reason",
+          },
+        });
+
         res.status(200).json({ newCardFrom, newCardTo });
       } else {
         res.status(400).json({ message: "Недостаточно средств" });
@@ -122,6 +167,7 @@ const transaction = async (req, res) => {
       res.status(404).json({ message: "Не удалось найти" });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Что-то пошло не так" });
   }
 };
@@ -162,6 +208,7 @@ const topUp = async (req, res) => {
 };
 
 module.exports = {
+  get,
   add,
   remove,
   transaction,
