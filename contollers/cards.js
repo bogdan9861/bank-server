@@ -98,6 +98,12 @@ const transaction = async (req, res) => {
       },
     });
 
+    if (userTo === null) {
+      return res
+        .status(400)
+        .json({ message: "Не удалось найти пользователя с таким номером" });
+    }
+
     const cardFrom = await prisma.card.findFirst({
       where: {
         userId: req.user.id,
@@ -109,6 +115,16 @@ const transaction = async (req, res) => {
         userId: userTo.id,
       },
     });
+
+    if (+cardTo.ballance + +sum > 100000000) {
+      return res.status(400).json({ message: "Превышен допустимый лимит" });
+    }
+
+    if (cardFrom.userId === cardTo.userId) {
+      return res
+        .status(400)
+        .json({ message: "Перевод самому себе не возможен" });
+    }
 
     if (cardFrom && cardTo && userTo) {
       if (+cardFrom.ballance >= +sum) {
@@ -185,6 +201,10 @@ const topUp = async (req, res) => {
         userId: req.user.id,
       },
     });
+
+    if (+cardData.ballance + +sum > 100000000) {
+      return res.status(400).json({ message: "Превышен допустимый лимит" });
+    }
 
     const card = await prisma.card.update({
       where: {

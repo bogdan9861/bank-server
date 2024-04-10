@@ -2,7 +2,11 @@ const { prisma } = require("../prisma/prisma-client");
 
 const getAll = async (req, res) => {
   try {
-    const contacts = await prisma.contacts.findMany();
+    const contacts = await prisma.contacts.findMany({
+      where: {
+        userId: req.user.id
+      }
+    });
 
     if (contacts) {
       res.status(200).json(contacts);
@@ -42,7 +46,35 @@ const create = async (req, res) => {
   }
 };
 
+const remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id)
+      return res
+        .status(400)
+        .json({ message: "Не удалось получить Id контакта" });
+
+    const contact = await prisma.contacts.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (contact) {
+      res.status(200).json(contact);
+    } else {
+      res
+        .status(404)
+        .json({ message: "Не удалось найти контакт для удаления" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Что-то пошло не так" });
+  }
+};
+
 module.exports = {
   create,
-  getAll
+  getAll,
+  remove,
 };

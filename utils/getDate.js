@@ -36,13 +36,25 @@ const getDate = () => {
   };
 
   const getTime = () => {
-    return `${date.getHours()}:${date.getMinutes()}`;
+    let hour = date.getHours();
+    let minutes = date.getMinutes();
+
+    const setZero = (num) => {
+      if (num < 10) {
+        return "0" + num;
+      } else {
+        return num;
+      }
+    };
+
+    return `${setZero(hour)}:${setZero(minutes)}`;
   };
 
   return { getCurrentDate, getTime };
+
 };
 
-console.log(getDate().getTime());
+
 
 module.exports = {
   getDate,
