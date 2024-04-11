@@ -55,14 +55,21 @@ const remove = async (req, res) => {
         .status(400)
         .json({ message: "Не удалось получить Id контакта" });
 
-    const contact = await prisma.contacts.delete({
+    const RemovedContact = await prisma.contacts.delete({
       where: {
         id,
       },
     });
 
-    if (contact) {
-      res.status(200).json(contact);
+    if (RemovedContact) {
+      const contacts = await prisma.contacts.findMany();
+
+      if (contacts) {
+        res.status(200).json(contacts)
+      } else {
+        res.status(404).json({message: 'При получении контактов что-то пошло не так'})
+      }
+    
     } else {
       res
         .status(404)
