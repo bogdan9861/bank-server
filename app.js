@@ -7,10 +7,10 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({origin: "https://main--wonderful-cat-6c2c99.netlify.app"}));
 app.use(logger('dev'));
 
-app.use(express.json());-
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
