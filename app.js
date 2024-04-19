@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({origin: "https://wonderful-cat-6c2c99.netlify.app"}));
+app.use(cors({origin: "*"}));
 app.use(logger('dev'));
 
 app.use(express.json());
