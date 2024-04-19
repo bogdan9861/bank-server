@@ -9,8 +9,6 @@ const get = async (req, res) => {
       },
     });
 
-    console.log(card);
-
     if (card) {
       res.status(200).json(card);
     } else {
@@ -54,7 +52,6 @@ const add = async (req, res) => {
       res.status(400).json("Не удалось добавить карту");
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Что-то пошло не так" });
   }
 };
@@ -159,7 +156,7 @@ const transaction = async (req, res) => {
             sum,
             time: getDate().getTime(),
             date: getDate().getCurrentDate(),
-            reason: reason || "without reason",
+            reason: reason || "без причины",
           },
         });
 
@@ -171,7 +168,7 @@ const transaction = async (req, res) => {
             sum,
             time: getDate().getTime(),
             date: getDate().getCurrentDate(),
-            reason: reason || "without reason",
+            reason: reason || "без причины",
           },
         });
 
@@ -222,7 +219,6 @@ const topUp = async (req, res) => {
       res.status(404).json({ message: "Не удалось найти" });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Что-то пошло не так" });
   }
 };

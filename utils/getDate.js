@@ -51,10 +51,7 @@ const getDate = () => {
   };
 
   return { getCurrentDate, getTime };
-
 };
-
-
 
 module.exports = {
   getDate,

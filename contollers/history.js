@@ -9,7 +9,7 @@ const get = async (req, res) => {
     });
 
     if (history) {
-      res.status(200).json(history);
+      res.status(200).json(history.reverse());
     } else {
       res.status(404).json({ message: "Не удалось найти" });
     }
