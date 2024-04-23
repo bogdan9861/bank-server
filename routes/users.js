@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { get, register, login } = require("../contollers/users");
+const { get, register, login, setPhoto } = require("../contollers/users");
 const { auth } = require("../middleware/auth");
 
 router.get("/", auth, get);
+
+router.put('/photo', auth, setPhoto)
 
 router.post("/register", register);
 

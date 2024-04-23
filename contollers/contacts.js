@@ -21,7 +21,7 @@ const getAll = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { name, phoneNumber } = req.body;
+    const { name, phoneNumber, url = "" } = req.body;
 
     if (!name || !phoneNumber) {
       return res.status(400).json({ message: "Все поля обязательны" });
@@ -30,6 +30,7 @@ const create = async (req, res) => {
     const contact = await prisma.contacts.create({
       data: {
         name,
+        photo: url,
         phoneNumber,
         userId: req.user.id,
       },

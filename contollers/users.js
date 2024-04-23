@@ -69,6 +69,7 @@ const register = async (req, res) => {
     const user = await prisma.user.create({
       data: {
         name,
+        photo: "",
         phoneNumber,
         password: hashedPassword,
         referal: `${name.toUpperCase()}-${Math.floor(Math.random() * 10000)}`,
@@ -81,6 +82,7 @@ const register = async (req, res) => {
       return res.json({
         id: user.id,
         name: user.name,
+        photo: user.photo,
         phoneNumber: user.phoneNumber,
         referal: user.referal,
         token: jwt.sign({ id: user.id }, secret, { expiresIn: "30d" }),
@@ -129,11 +131,50 @@ const login = async (req, res) => {
   }
 };
 
+const setPhoto = async (req, res) => {
+  try {
+    const { url } = req.body;
+
+    console.log(url);
+
+    if (!url) {
+      return res.status(400).json({message: 'Не удалось получить url изображения'})
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        ...req.user,
+        photo: url,
+      },
+    });
+
+    if (user) {
+      res
+        .status(201)
+        .json(
+          {
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            photo: user.photo
+          }
+        );
+    } else {
+      res.status(404).json({ message: "не удалось получить пользователя" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Что-то пошло не так" });
+  }
+};
+
 const get = async (req, res) => {
   try {
     return res.status(200).json(req.user);
   } catch (error) {
-    res.status(500).json({message: 'Что-то пошло не так'})
+    res.status(500).json({ message: "Что-то пошло не так" });
   }
 };
 
@@ -141,4 +182,5 @@ module.exports = {
   register,
   login,
   get,
+  setPhoto,
 };
