@@ -1,14 +1,14 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors')
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 
-app.use(cors({origin: "*"}));
-app.use(logger('dev'));
+app.use(cors({ origin: "https://wonderful-cat-6c2c99.netlify.app" }));
+app.use(logger("dev"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
